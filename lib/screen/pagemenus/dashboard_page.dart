@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:sims_ppob_irfan_ghozali/configs/theme.dart';
 import 'package:sims_ppob_irfan_ghozali/provider/balance_provider.dart';
 import 'package:sims_ppob_irfan_ghozali/provider/home_provider.dart';
+import 'package:sims_ppob_irfan_ghozali/provider/profile_provider.dart';
 import 'package:sims_ppob_irfan_ghozali/utils/util.dart';
 import 'package:sims_ppob_irfan_ghozali/widgets/items/list_item_banner.dart';
 import 'package:sims_ppob_irfan_ghozali/widgets/items/list_item_service.dart';
@@ -19,16 +20,20 @@ class DashboardPageScreen extends StatefulWidget {
 class _DashboardPageScreenState extends State<DashboardPageScreen> {
   HomeProvider? homeProvider;
   BalanceProvider? balanceProvider;
+  ProfileProvider? profileProvider;
   bool isShowBalance = false;
 
   @override
   void initState() {
     super.initState();
+    final profileProvider =
+        Provider.of<ProfileProvider>(context, listen: false);
     final balanceProvider =
         Provider.of<BalanceProvider>(context, listen: false);
-    balanceProvider.getBalance();
     final homeProvider = Provider.of<HomeProvider>(context, listen: false);
-    homeProvider.getProfile();
+
+    profileProvider.getProfile();
+    balanceProvider.getBalance();
     homeProvider.getAllServices();
     homeProvider.getAllBanners();
   }
@@ -36,23 +41,21 @@ class _DashboardPageScreenState extends State<DashboardPageScreen> {
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
-      child: FadedScaleAnimation(
-        child: Column(
-          children: [
-            _topWidget(),
-            spaceHeight16,
-            _balanceWidget(),
-            spaceHeight16,
-            _serviceWidget(),
-            _bannerWidget(),
-          ],
-        ),
+      child: Column(
+        children: [
+          _topWidget(),
+          spaceHeight16,
+          FadedScaleAnimation(child: _balanceWidget()),
+          spaceHeight16,
+          FadedScaleAnimation(child: _serviceWidget()),
+          FadedScaleAnimation(child: _bannerWidget()),
+        ],
       ),
     );
   }
 
   Widget _topWidget() {
-    homeProvider = Provider.of<HomeProvider>(context);
+    profileProvider = Provider.of<ProfileProvider>(context);
     return Padding(
       padding: const EdgeInsets.symmetric(
           horizontal: paddingExtraWide, vertical: 16),
@@ -80,7 +83,7 @@ class _DashboardPageScreenState extends State<DashboardPageScreen> {
                   )
                 ],
               ),
-              homeProvider!.isLoadingProfile
+              profileProvider!.isLoadingProfile
                   ? Container(
                       margin: const EdgeInsets.only(top: 18),
                       width: 16,
@@ -90,14 +93,16 @@ class _DashboardPageScreenState extends State<DashboardPageScreen> {
                         strokeWidth: 1.5,
                       ),
                     )
-                  : homeProvider!.profile.data!.profileImage!.contains('null')
+                  : profileProvider!.profile.data!.profileImage!
+                          .contains('null')
                       ? Image.asset('assets/images/img_default_profile.png',
                           width: 36, height: 36)
                       : CachedNetworkImage(
                           width: 36,
                           height: 36,
                           fit: BoxFit.cover,
-                          imageUrl: homeProvider!.profile.data!.profileImage!,
+                          imageUrl:
+                              profileProvider!.profile.data!.profileImage!,
                           placeholder: (context, url) => const Center(
                               child: SizedBox(
                             width: 16,
@@ -121,7 +126,7 @@ class _DashboardPageScreenState extends State<DashboardPageScreen> {
               fontSize: 20,
             ),
           ),
-          homeProvider!.isLoadingProfile
+          profileProvider!.isLoadingProfile
               ? const Row(
                   children: [
                     SizedBox(
@@ -140,7 +145,7 @@ class _DashboardPageScreenState extends State<DashboardPageScreen> {
                   ],
                 )
               : Text(
-                  '${homeProvider!.profile.data!.firstName!} ${homeProvider!.profile.data!.lastName!}',
+                  '${profileProvider!.profile.data!.firstName!} ${profileProvider!.profile.data!.lastName!}',
                   style: const TextStyle(
                     fontWeight: FontWeight.w900,
                     height: 1,

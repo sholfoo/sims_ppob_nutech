@@ -1,8 +1,12 @@
+import 'dart:io';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:sims_ppob_irfan_ghozali/configs/theme.dart';
-import 'package:sims_ppob_irfan_ghozali/provider/home_provider.dart';
+import 'package:sims_ppob_irfan_ghozali/provider/profile_provider.dart';
+import 'package:sims_ppob_irfan_ghozali/utils/util.dart';
 import 'package:sims_ppob_irfan_ghozali/widgets/action_bar_widget.dart';
 import 'package:sims_ppob_irfan_ghozali/widgets/button_fill_widget.dart';
 import 'package:sims_ppob_irfan_ghozali/widgets/button_outlined_widget.dart';
@@ -22,9 +26,34 @@ class _AccountPageScreenState extends State<AccountPageScreen> {
   TextEditingController emailController = TextEditingController();
   TextEditingController firstNameController = TextEditingController();
   TextEditingController lastNameController = TextEditingController();
-  HomeProvider? homeProvider;
+  ProfileProvider? profileProvider;
 
   bool isEditProfile = false;
+
+  final ImagePicker _picker = ImagePicker();
+  File? _imgSelectFile;
+  String? _imgSelectPath;
+
+  Future<void> getImage() async {
+    try {
+      XFile? pickedFile = await _picker.pickImage(source: ImageSource.gallery);
+      if (pickedFile != null) {
+        setState(() {
+          _imgSelectFile = File(pickedFile.path);
+          _imgSelectPath = pickedFile.path;
+
+          Utility.loadingDialog(context, false, baseTextApp);
+          Provider.of<ProfileProvider>(context, listen: false)
+              .updateProfileImage(_imgSelectPath!)
+              .then((value) => {
+                    Navigator.pop(context),
+                    Utility.snackbarAlert(
+                        context, 'Update foto profile berhasil.'),
+                  });
+        });
+      }
+    } catch (e) {}
+  }
 
   @override
   void initState() {
@@ -34,59 +63,71 @@ class _AccountPageScreenState extends State<AccountPageScreen> {
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
-      child: FadedScaleAnimation(
-        child: Column(
-          children: [
-            ActionBarWidget(
-              actionBarTitle: 'Akun',
-              onActionBackToDashboard: widget.onBackPressed,
-            ),
-            _detailView(),
-            spaceHeight24,
-            _formEditProfile(),
-          ],
-        ),
+      child: Column(
+        children: [
+          ActionBarWidget(
+            actionBarTitle: 'Akun',
+            onActionBackToDashboard: widget.onBackPressed,
+          ),
+          FadedScaleAnimation(child: _detailView()),
+          spaceHeight24,
+          FadedScaleAnimation(child: _formEditProfile()),
+        ],
       ),
     );
   }
 
   Widget _detailView() {
-    homeProvider = Provider.of<HomeProvider>(context);
+    profileProvider = Provider.of<ProfileProvider>(context);
     return Column(
       children: [
         spaceHeight24,
-        homeProvider!.profile.data!.profileImage!.contains('null')
-            ? CircleAvatar(
-                radius: 56,
-                backgroundColor: Colors.transparent,
-                child: ClipOval(
-                  child: Image.asset(
-                    'assets/images/img_default_profile.png',
-                    fit: BoxFit.cover,
-                    width: double.infinity,
-                  ),
-                ),
-              )
-            : CircleAvatar(
-                radius: 36,
-                child: ClipOval(
-                  child: CachedNetworkImage(
-                    width: double.infinity,
-                    fit: BoxFit.cover,
-                    imageUrl: homeProvider!.userImagePreference,
-                    placeholder: (context, url) =>
-                        const CircularProgressIndicator(
-                      color: baseTextBlackDark,
-                      strokeWidth: 1.5,
+        InkWell(
+          onTap: () => getImage(),
+          child: _imgSelectFile != null
+              ? CircleAvatar(
+                  radius: 56,
+                  child: ClipOval(
+                    child: Image.file(
+                      _imgSelectFile!,
+                      fit: BoxFit.cover,
+                      width: double.infinity,
                     ),
-                    errorWidget: (context, url, error) =>
-                        const Icon(Icons.error),
                   ),
-                ),
-              ),
+                )
+              : profileProvider!.profile.data!.profileImage!.contains('null')
+                  ? CircleAvatar(
+                      radius: 56,
+                      backgroundColor: Colors.transparent,
+                      child: ClipOval(
+                        child: Image.asset(
+                          'assets/images/img_default_profile.png',
+                          fit: BoxFit.cover,
+                          width: double.infinity,
+                        ),
+                      ),
+                    )
+                  : CircleAvatar(
+                      radius: 36,
+                      child: ClipOval(
+                        child: CachedNetworkImage(
+                          width: double.infinity,
+                          fit: BoxFit.cover,
+                          imageUrl: profileProvider!.userImagePreference,
+                          placeholder: (context, url) =>
+                              const CircularProgressIndicator(
+                            color: baseTextBlackDark,
+                            strokeWidth: 1.5,
+                          ),
+                          errorWidget: (context, url, error) =>
+                              const Icon(Icons.error),
+                        ),
+                      ),
+                    ),
+        ),
         spaceHeight16,
         Text(
-          '${homeProvider!.profile.data!.firstName!} ${homeProvider!.profile.data!.lastName!}',
+          '${profileProvider!.profile.data!.firstName!} ${profileProvider!.profile.data!.lastName!}',
           style: const TextStyle(
             fontWeight: FontWeight.w900,
             height: 1,
@@ -98,10 +139,10 @@ class _AccountPageScreenState extends State<AccountPageScreen> {
   }
 
   Widget _formEditProfile() {
-    homeProvider = Provider.of<HomeProvider>(context);
-    emailController.text = homeProvider!.profile.data!.email!;
-    firstNameController.text = homeProvider!.profile.data!.firstName!;
-    lastNameController.text = homeProvider!.profile.data!.lastName!;
+    profileProvider = Provider.of<ProfileProvider>(context);
+    emailController.text = profileProvider!.profile.data!.email!;
+    firstNameController.text = profileProvider!.profile.data!.firstName!;
+    lastNameController.text = profileProvider!.profile.data!.lastName!;
 
     return Container(
       padding: const EdgeInsets.symmetric(
@@ -191,6 +232,15 @@ class _AccountPageScreenState extends State<AccountPageScreen> {
             // init Register
             setState(() {
               isEditProfile = false;
+              Utility.loadingDialog(context, false, baseTextApp);
+              Provider.of<ProfileProvider>(context, listen: false)
+                  .updateProfile(firstNameController.text.toString(),
+                      lastNameController.text.toString())
+                  .then((value) => {
+                        Navigator.pop(context),
+                        Utility.snackbarAlert(
+                            context, 'Update profile berhasil.'),
+                      });
             });
           },
         ),

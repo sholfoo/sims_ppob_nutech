@@ -300,224 +300,79 @@ class ApiService {
     }
   }
 
-  // static Future<NewsModel?> initDashboardNews() async {
-  //   String? auth =
-  //       await SharedPrefManager().getStringValueSF(KEY_USER_AUTH_TOKEN);
-  //   try {
-  //     String url = Constants.apiServices.newsApi;
-  //     Dio dio = new Dio();
-  //     (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
-  //         (HttpClient client) {
-  //       client.badCertificateCallback =
-  //           (X509Certificate cert, String host, int port) => true;
-  //       return client;
-  //     };
-  //     var responseDio = await dio.post(
-  //       url,
-  //       options: Options(
-  //           headers: <String, String>{'Authorization': 'Bearer ' + auth!}),
-  //     );
-  //     print("NEWS " + responseDio.data.toString());
-  //     return NewsModel.fromJson(responseDio.data);
-  //   } on DioError catch (e) {
-  //     print("Exception " + e.toString());
-  //     return null;
-  //   }
-  // }
+  static Future<Profile?> updateProfile(
+      String firstName, String lastName) async {
+    String? auth =
+        await SharedPrefManager().getStringValueSF(KEY_USER_AUTH_TOKEN);
+    try {
+      String url = Constants.apiServices.profileUpdateApi;
+      Dio dio = Dio(BaseOptions(
+        contentType: Headers.jsonContentType,
+        responseType: ResponseType.json,
+        validateStatus: (_) => true,
+      ));
+      (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
+          (HttpClient client) {
+        client.badCertificateCallback =
+            (X509Certificate cert, String host, int port) => true;
+        return client;
+      };
+      var responseDio = await dio.put(
+        url,
+        options: Options(headers: <String, String>{
+          'Authorization': 'Bearer $auth',
+          'Content-Type': 'application/json; charset=utf-8',
+          'Accept': 'application/json',
+        }),
+        data: {'first_name': firstName, 'last_name': lastName},
+      );
 
-  // static Future<PrtgDeviceModel?> initPrtgDevices() async {
-  //   String? prtgUrl = await SharedPrefManager().getStringValueSF(KEY_PRTG_URL);
-  //   String? prtgUserName =
-  //       await SharedPrefManager().getStringValueSF(KEY_PRTG_USERNAME);
-  //   String? prtgPassHash =
-  //       await SharedPrefManager().getStringValueSF(KEY_PRTG_PASSHASH);
+      print("UPDATE PROFILE Response Body ${responseDio.data}");
 
-  //   try {
-  //     String url = prtgUrl! + "/api/table.json?";
-  //     var responseDio = await Dio().get(url, queryParameters: {
-  //       'content': 'devices',
-  //       'columns': 'objid,group,device,status,priority,location,sensor',
-  //       'username': prtgUserName!,
-  //       'passhash': prtgPassHash!,
-  //       'count': '*',
-  //     });
-  //     print("PRTG Device Response Body " + responseDio.data.toString());
-  //     print("PRTG Response CODE " + responseDio.statusCode.toString());
-  //     return PrtgDeviceModel.fromJson(responseDio.data);
-  //   } on DioError catch (e) {
-  //     print("Exception " + e.toString());
-  //     return null;
-  //   }
-  // }
+      return Profile.fromJson(responseDio.data);
+    } on DioError catch (e) {
+      print("Exception $e");
+      return null;
+    }
+  }
 
-  // static Future<PrtgSensorModel?> initPrtgSensors() async {
-  //   String? prtgUrl = await SharedPrefManager().getStringValueSF(KEY_PRTG_URL);
-  //   String? prtgUserName =
-  //       await SharedPrefManager().getStringValueSF(KEY_PRTG_USERNAME);
-  //   String? prtgPassHash =
-  //       await SharedPrefManager().getStringValueSF(KEY_PRTG_PASSHASH);
+  static Future<Profile?> updateProfileImage(String mImagePath) async {
+    String? auth =
+        await SharedPrefManager().getStringValueSF(KEY_USER_AUTH_TOKEN);
+    try {
+      String url = Constants.apiServices.profileImageUpdateApi;
+      String fileName = mImagePath.split('/').last;
+      Dio dio = Dio(BaseOptions(
+        contentType: Headers.jsonContentType,
+        responseType: ResponseType.json,
+        validateStatus: (_) => true,
+      ));
+      (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
+          (HttpClient client) {
+        client.badCertificateCallback =
+            (X509Certificate cert, String host, int port) => true;
+        return client;
+      };
+      FormData formData = FormData.fromMap({
+        "file": await MultipartFile.fromFile(mImagePath, filename: fileName),
+      });
 
-  //   try {
-  //     String url = prtgUrl! + "/api/table.json?";
-  //     var responseDio = await Dio().get(url, queryParameters: {
-  //       'content': 'sensors',
-  //       'columns': 'objid,group,device,status,priority,location,sensor,message',
-  //       'username': prtgUserName!,
-  //       'passhash': prtgPassHash!,
-  //       'count': '*',
-  //     });
-  //     print("PRTG Sensor Response Body " + responseDio.data.toString());
-  //     print("PRTG Sensor Response CODE " + responseDio.statusCode.toString());
-  //     return PrtgSensorModel.fromJson(responseDio.data);
-  //   } on DioError catch (e) {
-  //     print("Exception " + e.toString());
-  //     return null;
-  //   }
-  // }
+      print('=====> IMAGE PATH : ' + mImagePath);
+      print('=====> FORM DATA : ' + formData.toString());
 
-  // static Future<PrtgStatusDeviceModel?> initPrtgStatusDevice(int objId) async {
-  //   String? prtgUrl = await SharedPrefManager().getStringValueSF(KEY_PRTG_URL);
-  //   String? prtgUserName =
-  //       await SharedPrefManager().getStringValueSF(KEY_PRTG_USERNAME);
-  //   String? prtgPassHash =
-  //       await SharedPrefManager().getStringValueSF(KEY_PRTG_PASSHASH);
+      var responseDio = await dio.put(
+        url,
+        options: Options(
+            headers: <String, String>{'Authorization': 'Bearer ${auth!}'}),
+        data: formData,
+      );
 
-  //   try {
-  //     String url = prtgUrl! + "/api/status.json?";
-  //     var responseDio = await Dio().get(url, queryParameters: {
-  //       'asjson': true,
-  //       'id': objId,
-  //       'username': prtgUserName!,
-  //       'passhash': prtgPassHash!,
-  //     });
-  //     print("PRTG Status Device Response Body " + responseDio.data.toString());
-  //     print("PRTG Status Device Response CODE " +
-  //         responseDio.statusCode.toString());
-  //     return PrtgStatusDeviceModel.fromJson(responseDio.data);
-  //   } on DioError catch (e) {
-  //     print("Exception " + e.toString());
-  //     return null;
-  //   }
-  // }
+      print("UPDATE PROFILE Response Body ${responseDio.data}");
 
-  // static Future<PrtgChartLegendModel?> initPrtgChartLegend(int objId) async {
-  //   String? prtgUrl = await SharedPrefManager().getStringValueSF(KEY_PRTG_URL);
-  //   String? prtgUserName =
-  //       await SharedPrefManager().getStringValueSF(KEY_PRTG_USERNAME);
-  //   String? prtgPassHash =
-  //       await SharedPrefManager().getStringValueSF(KEY_PRTG_PASSHASH);
-
-  //   try {
-  //     String url = prtgUrl! + "/api/chartlegend.json?";
-  //     var responseDio = await Dio().get(url, queryParameters: {
-  //       'id': objId,
-  //       'username': prtgUserName!,
-  //       'passhash': prtgPassHash!,
-  //     });
-  //     print("PRTG Chart Legend Response Body " + responseDio.data.toString());
-  //     print("PRTG Chart Legend Response CODE " +
-  //         responseDio.statusCode.toString());
-  //     return PrtgChartLegendModel.fromJson(responseDio.data);
-  //   } on DioError catch (e) {
-  //     print("Exception " + e.toString());
-  //     return null;
-  //   }
-  // }
-
-  // static Future<InvoiceModel?> initInvoices() async {
-  //   // String? prtgUrl = await SharedPrefManager().getStringValueSF(KEY_PRTG_URL);
-  //   // String? prtgUserName =
-  //   //     await SharedPrefManager().getStringValueSF(KEY_PRTG_USERNAME);
-  //   // String? prtgPassHash =
-  //   //     await SharedPrefManager().getStringValueSF(KEY_PRTG_PASSHASH);
-  //   String? customerInvoiceId =
-  //       await SharedPrefManager().getStringValueSF(KEY_INVOICE_CUST_ID);
-  //   try {
-  //     String url = Constants.apiServices.invoiceApi;
-  //     Dio dio = new Dio();
-  //     (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
-  //         (HttpClient client) {
-  //       client.badCertificateCallback =
-  //           (X509Certificate cert, String host, int port) => true;
-  //       return client;
-  //     };
-  //     var responseDio =
-  //         await dio.post(url, data: {'customer_id': customerInvoiceId});
-  //     print("Invoice Response Body " + responseDio.data.toString());
-  //     print("Invoice Response CODE " + responseDio.statusCode.toString());
-  //     return InvoiceModel.fromJson(responseDio.data);
-  //   } on DioError catch (e) {
-  //     print("Exception " + e.toString());
-  //     return null;
-  //   }
-  // }
-
-  // static Future<WorkOrderModel?> initWorkOrder() async {
-  //   String? customerInvoiceId =
-  //       await SharedPrefManager().getStringValueSF(KEY_INVOICE_CUST_ID);
-  //   try {
-  //     String url = Constants.apiServices.woApi;
-  //     Dio dio = new Dio();
-  //     (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
-  //         (HttpClient client) {
-  //       client.badCertificateCallback =
-  //           (X509Certificate cert, String host, int port) => true;
-  //       return client;
-  //     };
-  //     var responseDio =
-  //         await dio.post(url, data: {'customer_id': customerInvoiceId});
-  //     print("Work Order Response Body " + responseDio.data.toString());
-  //     print("Work Order Response CODE " + responseDio.statusCode.toString());
-  //     return WorkOrderModel.fromJson(responseDio.data);
-  //   } on DioError catch (e) {
-  //     print("Exception " + e.toString());
-  //     return null;
-  //   }
-  // }
-
-  // static Future<InvoiceModel?> initInvoicesByFilter(
-  //     String customerId, String filterMonth, String status) async {
-  //   try {
-  //     String url = Constants.apiServices.invoiceApi;
-  //     Dio dio = new Dio();
-  //     (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
-  //         (HttpClient client) {
-  //       client.badCertificateCallback =
-  //           (X509Certificate cert, String host, int port) => true;
-  //       return client;
-  //     };
-  //     var responseDio = await dio.post(url, data: {
-  //       'customer_id': customerId,
-  //       'by_month': filterMonth,
-  //       'status': status
-  //     });
-  //     print("Invoice Response Body " + responseDio.data.toString());
-  //     print("Invoice Response CODE " + responseDio.statusCode.toString());
-  //     return InvoiceModel.fromJson(responseDio.data);
-  //   } on DioError catch (e) {
-  //     print("Exception " + e.toString());
-  //     return null;
-  //   }
-  // }
-
-  // static Future<WorkOrderModel?> initWorkOrderByFilter(
-  //     String customerId) async {
-  //   try {
-  //     String url = Constants.apiServices.woApi;
-  //     Dio dio = new Dio();
-  //     (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
-  //         (HttpClient client) {
-  //       client.badCertificateCallback =
-  //           (X509Certificate cert, String host, int port) => true;
-  //       return client;
-  //     };
-  //     var responseDio = await dio.post(url, data: {'customer_id': customerId});
-  //     print("Work Order Response Body " + responseDio.data.toString());
-  //     print("Work Order Response CODE " + responseDio.statusCode.toString());
-  //     return WorkOrderModel.fromJson(responseDio.data);
-  //   } on DioError catch (e) {
-  //     print("Exception " + e.toString());
-  //     return null;
-  //   }
-  // }
+      return Profile.fromJson(responseDio.data);
+    } on DioError catch (e) {
+      print("Exception $e");
+      return null;
+    }
+  }
 }

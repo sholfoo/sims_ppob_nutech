@@ -33,16 +33,16 @@ class _TransactionPageScreenState extends State<TransactionPageScreen> {
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
-      child: FadedScaleAnimation(
-        child: Column(
-          children: [
-            ActionBarWidget(
-              actionBarTitle: 'Transaksi',
-              onActionBackToDashboard: widget.onBackPressed,
-            ),
-            _balanceView(),
-            spaceHeight32,
-            const Align(
+      child: Column(
+        children: [
+          ActionBarWidget(
+            actionBarTitle: 'Transaksi',
+            onActionBackToDashboard: widget.onBackPressed,
+          ),
+          FadedScaleAnimation(child: _balanceView()),
+          spaceHeight32,
+          FadedScaleAnimation(
+            child: const Align(
                 alignment: Alignment.centerLeft,
                 child: Padding(
                   padding: EdgeInsets.symmetric(horizontal: paddingExtraWide),
@@ -51,11 +51,11 @@ class _TransactionPageScreenState extends State<TransactionPageScreen> {
                     style: TextStyle(fontWeight: FontWeight.bold),
                   ),
                 )),
-            spaceHeight8,
-            _transactionHistory(),
-            spaceHeight16,
-          ],
-        ),
+          ),
+          spaceHeight8,
+          FadedScaleAnimation(child: _transactionHistory()),
+          spaceHeight16,
+        ],
       ),
     );
   }

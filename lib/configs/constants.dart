@@ -25,6 +25,8 @@ class ApiServices {
   String get userLoginApi => "${apiBaseUrl}login";
   String get userRegisterApi => "${apiBaseUrl}registration";
   String get profileApi => "${apiBaseUrl}profile";
+  String get profileUpdateApi => "${apiBaseUrl}profile/update";
+  String get profileImageUpdateApi => "${apiBaseUrl}profile/image";
   String get balanceApi => "${apiBaseUrl}balance";
   String get servicesApi => "${apiBaseUrl}services";
   String get bannersApi => "${apiBaseUrl}banner";

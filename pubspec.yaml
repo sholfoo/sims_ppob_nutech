@@ -53,6 +53,7 @@ dependencies:
   double_back_to_close_app: ^2.1.0
   shared_preferences: ^2.0.13
   animation_wrappers: ^3.0.0
+  image_picker: ^1.0.4
   intl: ^0.18.1
 
   # network Dependency library

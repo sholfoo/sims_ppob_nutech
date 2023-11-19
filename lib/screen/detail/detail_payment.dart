@@ -39,16 +39,16 @@ class _DetailPaymentPageState extends State<DetailPaymentPage> {
     return Scaffold(
       backgroundColor: backgroundBaseWhite,
       body: SingleChildScrollView(
-        child: FadedScaleAnimation(
-          child: Column(
-            children: [
-              ActionBarWidget(
-                actionBarTitle: 'Transaksi',
-                onActionBackToDashboard: () => Navigator.pop(context),
-              ),
-              _balanceView(),
-              spaceHeight32,
-              const Align(
+        child: Column(
+          children: [
+            ActionBarWidget(
+              actionBarTitle: 'Transaksi',
+              onActionBackToDashboard: () => Navigator.pop(context),
+            ),
+            FadedScaleAnimation(child: _balanceView()),
+            spaceHeight32,
+            FadedScaleAnimation(
+              child: const Align(
                   alignment: Alignment.centerLeft,
                   child: Padding(
                     padding: EdgeInsets.symmetric(horizontal: paddingExtraWide),
@@ -57,11 +57,11 @@ class _DetailPaymentPageState extends State<DetailPaymentPage> {
                       style: TextStyle(fontWeight: FontWeight.bold),
                     ),
                   )),
-              spaceHeight16,
-              _detailPayment(),
-              spaceHeight16,
-            ],
-          ),
+            ),
+            spaceHeight16,
+            FadedScaleAnimation(child: _detailPayment()),
+            spaceHeight16,
+          ],
         ),
       ),
     );

@@ -5,6 +5,7 @@ import 'package:sims_ppob_irfan_ghozali/configs/theme.dart';
 import 'package:sims_ppob_irfan_ghozali/provider/balance_provider.dart';
 import 'package:sims_ppob_irfan_ghozali/provider/history_provider.dart';
 import 'package:sims_ppob_irfan_ghozali/provider/home_provider.dart';
+import 'package:sims_ppob_irfan_ghozali/provider/profile_provider.dart';
 import 'package:sims_ppob_irfan_ghozali/provider/trx_provider.dart';
 import 'package:sims_ppob_irfan_ghozali/screen/auth/login_page.dart';
 import 'package:sims_ppob_irfan_ghozali/provider/auth_provider.dart';
@@ -17,6 +18,7 @@ void main() {
   runApp(MultiProvider(
     providers: [
       ChangeNotifierProvider(create: (_) => AuthProvider()),
+      ChangeNotifierProvider(create: (_) => ProfileProvider()),
       ChangeNotifierProvider(create: (_) => HomeProvider()),
       ChangeNotifierProvider(create: (_) => BalanceProvider()),
       ChangeNotifierProvider(create: (_) => HistoryProvider()),

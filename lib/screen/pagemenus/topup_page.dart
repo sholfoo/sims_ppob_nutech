@@ -48,16 +48,16 @@ class _TopupPageScreenState extends State<TopupPageScreen> {
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
-      child: FadedScaleAnimation(
-        child: Column(
-          children: [
-            ActionBarWidget(
-              actionBarTitle: 'Top Up',
-              onActionBackToDashboard: widget.onBackPressed,
-            ),
-            _balanceView(),
-            spaceHeight32,
-            const Align(
+      child: Column(
+        children: [
+          ActionBarWidget(
+            actionBarTitle: 'Top Up',
+            onActionBackToDashboard: widget.onBackPressed,
+          ),
+          FadedScaleAnimation(child: _balanceView()),
+          spaceHeight32,
+          FadedScaleAnimation(
+            child: const Align(
               alignment: Alignment.centerLeft,
               child: Padding(
                 padding: EdgeInsets.symmetric(horizontal: paddingExtraWide),
@@ -82,10 +82,10 @@ class _TopupPageScreenState extends State<TopupPageScreen> {
                 ),
               ),
             ),
-            spaceHeight24,
-            _formTopupWidget(),
-          ],
-        ),
+          ),
+          spaceHeight24,
+          FadedScaleAnimation(child: _formTopupWidget()),
+        ],
       ),
     );
   }
