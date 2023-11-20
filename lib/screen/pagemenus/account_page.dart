@@ -31,7 +31,6 @@ class _AccountPageScreenState extends State<AccountPageScreen> {
   bool isEditProfile = false;
 
   final ImagePicker _picker = ImagePicker();
-  File? _imgSelectFile;
   String? _imgSelectPath;
 
   Future<void> getImage() async {
@@ -39,16 +38,23 @@ class _AccountPageScreenState extends State<AccountPageScreen> {
       XFile? pickedFile = await _picker.pickImage(source: ImageSource.gallery);
       if (pickedFile != null) {
         setState(() {
-          _imgSelectFile = File(pickedFile.path);
           _imgSelectPath = pickedFile.path;
 
           Utility.loadingDialog(context, false, baseTextApp);
           Provider.of<ProfileProvider>(context, listen: false)
               .updateProfileImage(_imgSelectPath!)
               .then((value) => {
-                    Navigator.pop(context),
-                    Utility.snackbarAlert(
-                        context, 'Update foto profile berhasil.'),
+                    if (value == 'success')
+                      {
+                        Navigator.pop(context),
+                        Utility.snackbarAlert(
+                            context, 'Update foto profile berhasil.'),
+                      }
+                    else
+                      {
+                        Navigator.pop(context),
+                        Utility.snackbarAlert(context, value),
+                      }
                   });
         });
       }
@@ -84,46 +90,35 @@ class _AccountPageScreenState extends State<AccountPageScreen> {
         spaceHeight24,
         InkWell(
           onTap: () => getImage(),
-          child: _imgSelectFile != null
+          child: profileProvider!.profile.data!.profileImage!.contains('null')
               ? CircleAvatar(
                   radius: 56,
+                  backgroundColor: Colors.transparent,
                   child: ClipOval(
-                    child: Image.file(
-                      _imgSelectFile!,
+                    child: Image.asset(
+                      'assets/images/img_default_profile.png',
                       fit: BoxFit.cover,
                       width: double.infinity,
                     ),
                   ),
                 )
-              : profileProvider!.profile.data!.profileImage!.contains('null')
-                  ? CircleAvatar(
-                      radius: 56,
-                      backgroundColor: Colors.transparent,
-                      child: ClipOval(
-                        child: Image.asset(
-                          'assets/images/img_default_profile.png',
-                          fit: BoxFit.cover,
-                          width: double.infinity,
-                        ),
+              : CircleAvatar(
+                  radius: 36,
+                  child: ClipOval(
+                    child: CachedNetworkImage(
+                      width: double.infinity,
+                      fit: BoxFit.cover,
+                      imageUrl: profileProvider!.userImagePreference,
+                      placeholder: (context, url) =>
+                          const CircularProgressIndicator(
+                        color: baseTextBlackDark,
+                        strokeWidth: 1.5,
                       ),
-                    )
-                  : CircleAvatar(
-                      radius: 36,
-                      child: ClipOval(
-                        child: CachedNetworkImage(
-                          width: double.infinity,
-                          fit: BoxFit.cover,
-                          imageUrl: profileProvider!.userImagePreference,
-                          placeholder: (context, url) =>
-                              const CircularProgressIndicator(
-                            color: baseTextBlackDark,
-                            strokeWidth: 1.5,
-                          ),
-                          errorWidget: (context, url, error) =>
-                              const Icon(Icons.error),
-                        ),
-                      ),
+                      errorWidget: (context, url, error) =>
+                          const Icon(Icons.error),
                     ),
+                  ),
+                ),
         ),
         spaceHeight16,
         Text(

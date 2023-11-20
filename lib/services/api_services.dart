@@ -354,7 +354,10 @@ class ApiService {
         return client;
       };
       FormData formData = FormData.fromMap({
-        "file": await MultipartFile.fromFile(mImagePath, filename: fileName),
+        "file": await MultipartFile.fromFile(
+          mImagePath,
+          filename: fileName,
+        ),
       });
 
       print('=====> IMAGE PATH : ' + mImagePath);
@@ -362,8 +365,11 @@ class ApiService {
 
       var responseDio = await dio.put(
         url,
-        options: Options(
-            headers: <String, String>{'Authorization': 'Bearer ${auth!}'}),
+        options: Options(headers: <String, String>{
+          'Authorization': 'Bearer $auth',
+          'Content-Type': 'multipart/form-data',
+          'Accept': 'application/json',
+        }),
         data: formData,
       );
 

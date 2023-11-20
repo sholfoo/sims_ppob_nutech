@@ -49,17 +49,22 @@ class ProfileProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> updateProfileImage(String selectedImagePath) async {
+  Future<String> updateProfileImage(String selectedImagePath) async {
     isLoadingProfile = true;
 
     final response = await ApiService.updateProfileImage(selectedImagePath);
-    _profile = response;
+    if (response!.status == 0) {
+      _profile = response;
 
-    SharedPrefManager()
-        .addStringToSF(KEY_USER_AVATAR, _profile!.data!.profileImage!);
+      SharedPrefManager()
+          .addStringToSF(KEY_USER_AVATAR, _profile!.data!.profileImage!);
 
-    isLoadingProfile = false;
-    notifyListeners();
+      isLoadingProfile = false;
+      notifyListeners();
+      return 'success';
+    } else {
+      return response.message!;
+    }
   }
 
   Future<void> getSavedPreferences() async {
