@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -36,24 +38,33 @@ class _AccountPageScreenState extends State<AccountPageScreen> {
       XFile? pickedFile = await _picker.pickImage(source: ImageSource.gallery);
       if (pickedFile != null) {
         setState(() {
-          _imgSelectPath = pickedFile.path;
+          final imgSelectFile = File(pickedFile.path);
+          final bytes = imgSelectFile.readAsBytesSync().lengthInBytes;
+          final kb = bytes / 1024;
 
-          Utility.loadingDialog(context, false, baseTextApp);
-          Provider.of<ProfileProvider>(context, listen: false)
-              .updateProfileImage(_imgSelectPath!)
-              .then((value) => {
-                    if (value == 'success')
-                      {
-                        Navigator.pop(context),
-                        Utility.snackbarAlert(
-                            context, 'Update foto profile berhasil.'),
-                      }
-                    else
-                      {
-                        Navigator.pop(context),
-                        Utility.snackbarAlert(context, value),
-                      }
-                  });
+          if (kb > 100) {
+            Utility.snackbarAlert(context,
+                'Size image (.jpg) yang dapat diupload maksimum 100kb');
+          } else {
+            _imgSelectPath = pickedFile.path;
+
+            Utility.loadingDialog(context, false, baseTextApp);
+            Provider.of<ProfileProvider>(context, listen: false)
+                .updateProfileImage(_imgSelectPath!)
+                .then((value) => {
+                      if (value == 'success')
+                        {
+                          Navigator.pop(context),
+                          Utility.snackbarAlert(
+                              context, 'Update foto profile berhasil.'),
+                        }
+                      else
+                        {
+                          Navigator.pop(context),
+                          Utility.snackbarAlert(context, value),
+                        }
+                    });
+          }
         });
       }
     } catch (e) {}

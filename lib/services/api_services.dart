@@ -360,15 +360,11 @@ class ApiService {
         ),
       });
 
-      print('=====> IMAGE PATH : ' + mImagePath);
-      print('=====> FORM DATA : ' + formData.toString());
-
       var responseDio = await dio.put(
         url,
         options: Options(headers: <String, String>{
           'Authorization': 'Bearer $auth',
           'Content-Type': 'multipart/form-data',
-          'Accept': 'application/json',
         }),
         data: formData,
       );
