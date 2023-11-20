@@ -24,7 +24,6 @@ class _DetailPaymentPageState extends State<DetailPaymentPage> {
 
   TrxProvider? trxProvider;
 
-  bool isShowBalance = false;
   int? valueNominal;
 
   @override
@@ -72,7 +71,7 @@ class _DetailPaymentPageState extends State<DetailPaymentPage> {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: paddingExtraWide),
       padding: const EdgeInsets.symmetric(
-          horizontal: paddingExtraWide, vertical: paddingWide),
+          horizontal: paddingExtraWide, vertical: paddingExtraWide),
       width: MediaQuery.of(context).size.width,
       decoration: BoxDecoration(
         image: const DecorationImage(
@@ -88,49 +87,13 @@ class _DetailPaymentPageState extends State<DetailPaymentPage> {
             'Saldo Anda',
             style: TextStyle(fontSize: 14, color: baseTextWhite),
           ),
-          spaceHeight16,
-          isShowBalance
-              ? Text(
-                  rupiah(balanceProvider.balance.data.balance),
-                  style: const TextStyle(
-                      fontSize: 40,
-                      color: baseTextWhite,
-                      fontWeight: FontWeight.w900),
-                )
-              : const Text(
-                  'Rp ********',
-                  style: TextStyle(
-                      fontSize: 40,
-                      color: baseTextWhite,
-                      fontWeight: FontWeight.w900),
-                ),
-          spaceHeight16,
-          InkWell(
-            onTap: () {
-              setState(() {
-                isShowBalance = !isShowBalance;
-              });
-            },
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                Text(
-                  isShowBalance ? 'Sembunyikan Saldo' : 'Lihat Saldo',
-                  style: const TextStyle(
-                    fontSize: 14,
-                    color: baseTextWhite,
-                    decoration: TextDecoration.underline,
-                  ),
-                ),
-                spaceWidth4,
-                Icon(
-                  isShowBalance ? Icons.visibility : Icons.visibility_off,
-                  size: 12,
-                  color: baseTextWhite,
-                )
-              ],
-            ),
-          )
+          Text(
+            rupiah(balanceProvider.balance.data.balance),
+            style: const TextStyle(
+                fontSize: 40,
+                color: baseTextWhite,
+                fontWeight: FontWeight.w900),
+          ),
         ],
       ),
     );

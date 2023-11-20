@@ -23,7 +23,6 @@ class _TopupPageScreenState extends State<TopupPageScreen> {
   int maxValue = 1000000;
   List<int> nominal = [10000, 20000, 50000, 100000, 250000, 500000];
 
-  bool isShowBalance = false;
   int? selectedNominal = 0;
   BalanceProvider? balanceProvider;
 
@@ -163,7 +162,7 @@ class _TopupPageScreenState extends State<TopupPageScreen> {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: paddingExtraWide),
       padding: const EdgeInsets.symmetric(
-          horizontal: paddingExtraWide, vertical: paddingWide),
+          horizontal: paddingExtraWide, vertical: paddingExtraWide),
       width: MediaQuery.of(context).size.width,
       decoration: BoxDecoration(
         image: const DecorationImage(
@@ -179,49 +178,13 @@ class _TopupPageScreenState extends State<TopupPageScreen> {
             'Saldo Anda',
             style: TextStyle(fontSize: 14, color: baseTextWhite),
           ),
-          spaceHeight16,
-          isShowBalance
-              ? Text(
-                  rupiah(balanceProvider!.balance.data.balance),
-                  style: const TextStyle(
-                      fontSize: 40,
-                      color: baseTextWhite,
-                      fontWeight: FontWeight.w900),
-                )
-              : const Text(
-                  'Rp ********',
-                  style: TextStyle(
-                      fontSize: 40,
-                      color: baseTextWhite,
-                      fontWeight: FontWeight.w900),
-                ),
-          spaceHeight16,
-          InkWell(
-            onTap: () {
-              setState(() {
-                isShowBalance = !isShowBalance;
-              });
-            },
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                Text(
-                  isShowBalance ? 'Sembunyikan Saldo' : 'Lihat Saldo',
-                  style: const TextStyle(
-                    fontSize: 14,
-                    color: baseTextWhite,
-                    decoration: TextDecoration.underline,
-                  ),
-                ),
-                spaceWidth4,
-                Icon(
-                  isShowBalance ? Icons.visibility : Icons.visibility_off,
-                  size: 12,
-                  color: baseTextWhite,
-                )
-              ],
-            ),
-          )
+          Text(
+            rupiah(balanceProvider!.balance.data.balance),
+            style: const TextStyle(
+                fontSize: 40,
+                color: baseTextWhite,
+                fontWeight: FontWeight.w900),
+          ),
         ],
       ),
     );
