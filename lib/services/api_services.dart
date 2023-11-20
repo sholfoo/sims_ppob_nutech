@@ -13,6 +13,7 @@ import 'package:sims_ppob_irfan_ghozali/model/sims_banner.dart';
 import 'package:sims_ppob_irfan_ghozali/model/sims_service.dart';
 import 'package:sims_ppob_irfan_ghozali/model/transaction.dart';
 import 'package:sims_ppob_irfan_ghozali/shared/shared_prefs.dart';
+import 'package:http_parser/http_parser.dart';
 
 class ApiService {
   static Future<LoginAuth?> initLogin(String mEmail, String mPassword) async {
@@ -357,6 +358,7 @@ class ApiService {
         "file": await MultipartFile.fromFile(
           mImagePath,
           filename: fileName,
+          contentType: MediaType('image', 'png'),
         ),
       });
 

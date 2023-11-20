@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
@@ -67,7 +68,11 @@ class _AccountPageScreenState extends State<AccountPageScreen> {
           }
         });
       }
-    } catch (e) {}
+    } catch (e) {
+      if (kDebugMode) {
+        print(e);
+      }
+    }
   }
 
   @override
@@ -113,11 +118,12 @@ class _AccountPageScreenState extends State<AccountPageScreen> {
                 )
               : CircleAvatar(
                   radius: 36,
+                  backgroundColor: Colors.transparent,
                   child: ClipOval(
                     child: CachedNetworkImage(
                       width: double.infinity,
                       fit: BoxFit.cover,
-                      imageUrl: profileProvider!.userImagePreference,
+                      imageUrl: profileProvider!.profile.data!.profileImage!,
                       placeholder: (context, url) =>
                           const CircularProgressIndicator(
                         color: baseTextBlackDark,
