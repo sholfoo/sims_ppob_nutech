@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:sims_ppob_irfan_ghozali/model/sims_banner.dart';
 import 'package:sims_ppob_irfan_ghozali/model/sims_service.dart';
 import 'package:sims_ppob_irfan_ghozali/services/api_services.dart';
-import 'package:sims_ppob_irfan_ghozali/shared/shared_prefs.dart';
 
 class HomeProvider extends ChangeNotifier {
   bool isLoadingService = false;
