@@ -37,7 +37,6 @@ class AuthProvider extends ChangeNotifier {
       SharedPrefManager().addBoolToSF(KEY_IS_LOGGEDIN, true);
       SharedPrefManager()
           .addStringToSF(KEY_USER_AUTH_TOKEN, response.data!.token!);
-      print('TOKEN = ${response.data!.token!}');
       isLoading = false;
       notifyListeners();
       Navigator.pop(context);

@@ -36,7 +36,7 @@ class WidgetDialogExpiredAuth extends StatelessWidget {
                       type: PageTransitionType.fade,
                       duration: const Duration(milliseconds: 200),
                       reverseDuration: const Duration(milliseconds: 200),
-                      child: const LoginPageScreen(),
+                      child: LoginPageScreen(),
                     ),
                   );
                 },

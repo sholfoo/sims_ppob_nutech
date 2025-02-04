@@ -84,7 +84,7 @@ class _SIMSAppState extends State<SIMSApp> {
         fontFamily: fontFamily,
         primarySwatch: Colors.red,
       ),
-      home: userIsLoggedin ? const HomePageScreen() : const LoginPageScreen(),
+      home: userIsLoggedin ? const HomePageScreen() : LoginPageScreen(),
       builder: EasyLoading.init(),
     );
   }

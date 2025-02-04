@@ -32,23 +32,20 @@ class WidgetDialogLogout extends StatelessWidget {
               GestureDetector(
                 onTap: () {
                   Utility.loadingDialog(context, false, baseTextApp);
-                  Timer(
-                      const Duration(seconds: 3),
-                      () => {
-                            Navigator.pop(context),
-                            SharedPrefManager().clearSF(),
-                            Navigator.pushAndRemoveUntil(
-                              context,
-                              PageTransition(
-                                type: PageTransitionType.fade,
-                                duration: const Duration(milliseconds: 200),
-                                reverseDuration:
-                                    const Duration(milliseconds: 200),
-                                child: const LoginPageScreen(),
-                              ),
-                              (r) => false,
-                            ),
-                          });
+                  Timer(const Duration(seconds: 3), () {
+                    Navigator.pop(context);
+                    SharedPrefManager().clearSF();
+                    Navigator.pushAndRemoveUntil(
+                      context,
+                      PageTransition(
+                        type: PageTransitionType.fade,
+                        duration: const Duration(milliseconds: 200),
+                        reverseDuration: const Duration(milliseconds: 200),
+                        child: LoginPageScreen(),
+                      ),
+                      (r) => false,
+                    );
+                  });
                 },
                 child: Container(
                   height: 50,

@@ -1,24 +1,19 @@
+import 'package:animation_wrappers/animation_wrappers.dart';
 import 'package:flutter/material.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:provider/provider.dart';
-import 'package:sims_ppob_irfan_ghozali/configs/theme.dart';
-import 'package:sims_ppob_irfan_ghozali/provider/auth_provider.dart';
 import 'package:sims_ppob_irfan_ghozali/screen/auth/register_page.dart';
-import 'package:sims_ppob_irfan_ghozali/widgets/button_fill_widget.dart';
-import 'package:sims_ppob_irfan_ghozali/widgets/textformfield_widget.dart';
-import 'package:sims_ppob_irfan_ghozali/widgets/textformpass_widget.dart';
-import 'package:animation_wrappers/animation_wrappers.dart';
 
-class LoginPageScreen extends StatefulWidget {
-  const LoginPageScreen({super.key});
+import '../../configs/theme.dart';
+import '../../provider/auth_provider.dart';
+import '../../widgets/button_fill_widget.dart';
+import '../../widgets/textformfield_widget.dart';
+import '../../widgets/textformpass_widget.dart';
 
-  @override
-  State<LoginPageScreen> createState() => _LoginPageScreenState();
-}
-
-class _LoginPageScreenState extends State<LoginPageScreen> {
-  TextEditingController emailController = TextEditingController();
-  TextEditingController passwordController = TextEditingController();
+class LoginPageScreen extends StatelessWidget {
+  LoginPageScreen({Key? key}) : super(key: key);
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -32,7 +27,7 @@ class _LoginPageScreenState extends State<LoginPageScreen> {
           children: [
             topWidget(),
             spaceHeight32,
-            formWidget(),
+            formWidget(context),
             spaceHeight48,
           ],
         ),
@@ -86,7 +81,8 @@ class _LoginPageScreenState extends State<LoginPageScreen> {
     );
   }
 
-  Widget formWidget() {
+  Widget formWidget(BuildContext context) {
+    AuthProvider auth = Provider.of<AuthProvider>(context);
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 24),
       child: Column(children: [
@@ -107,7 +103,7 @@ class _LoginPageScreenState extends State<LoginPageScreen> {
           actionText: 'Masuk',
           onTap: () {
             // init Login
-            Provider.of<AuthProvider>(context, listen: false).initLogin(
+            auth.initLogin(
                 context, emailController.text, passwordController.text);
           },
         ),
